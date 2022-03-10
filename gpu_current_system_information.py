@@ -16,12 +16,12 @@ class curr_sys_info:
     def start(self):
         #print("inside start")
         t = int(self.timer)
-        cmd = '/opt/rocm/bin/rocm-smi -tgfpPu --showmemuse --%s'%(self.format)
+        cmd = '/opt/rocm/bin/rocm-smi --showpids -tgfpPu --showmemuse --%s'%(self.format)
         with open(self.outputfile,'a+') as file_ptr:
             while t > 0:
                 p = subprocess.Popen('%s'%cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 p.wait()
-                if (t != int(self.timer)):
+                if (t != int(self.timer) and self.format != "json"):
                     for line in p.stdout:
                         if not re.search(r"\bTemperature\b",line.decode(), re.M):
                             file_ptr.write(line.decode())
